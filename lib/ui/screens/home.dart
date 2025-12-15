@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.eco, color: Colors.green),
+            icon: Icon(Icons.eco, color: Color(0xFF628A67)),
             label: 'Herbarium',
           ),
           BottomNavigationBarItem(

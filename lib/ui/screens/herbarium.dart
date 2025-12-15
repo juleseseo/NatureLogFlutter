@@ -131,7 +131,7 @@ class _HerbariumPageState extends State<HerbariumPage> {
               children: [
                 Text(snap.name,
                     style: const TextStyle(fontWeight: FontWeight.bold)),
-                Icon(iconForType(snap.type), color: Colors.green),
+                Icon(iconForType(snap.type), color: Color(0xFF628A67)),
               ],
             ),
           ),
@@ -164,7 +164,7 @@ class _HerbariumPageState extends State<HerbariumPage> {
   Widget _info(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: Colors.green),
+        Icon(icon, size: 16, color: Color(0xFF628A67)),
         const SizedBox(width: 6),
         Expanded(child: Text(text)),
       ],
@@ -175,7 +175,7 @@ class _HerbariumPageState extends State<HerbariumPage> {
   Widget _cardContainer(Widget child) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFF628A67),
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(

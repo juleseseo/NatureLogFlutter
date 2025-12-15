@@ -35,7 +35,7 @@ class _CameraScreenState extends State<CameraScreen> {
       backgroundColor: Colors.lightGreen[50],
       appBar: AppBar(
         title: const Text('Prendre une photo'),
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xFF628A67),
         centerTitle: true,
         elevation: 0,
       ),
@@ -70,14 +70,14 @@ class _CameraScreenState extends State<CameraScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CircularProgressIndicator(
-                                color: Colors.green[700],
+                                color: Color(0xFF628A67),
                               ),
                               const SizedBox(height: 20),
                               Text(
                                 'Initialisation de la caméra...',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.green[700],
+                                  color: Color(0xFF628A67),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -103,11 +103,11 @@ class _CameraScreenState extends State<CameraScreen> {
                       ),
                       title: Row(
                         children: [
-                          Icon(Icons.check_circle, color: Colors.green[700]),
+                          Icon(Icons.check_circle, color: Color(0xFF628A67)),
                           const SizedBox(width: 10),
                           const Text(
                             'Résultat',
-                            style: TextStyle(color: Colors.green),
+                            style: TextStyle(color: Color(0xFF628A67)),
                           ),
                         ],
                       ),
@@ -115,14 +115,14 @@ class _CameraScreenState extends State<CameraScreen> {
                         state.result,
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.green[900],
+                          color: Color(0xFF628A67),
                         ),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           style: TextButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: Color(0xFF628A67),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -173,7 +173,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   ),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Color(0xFF628A67),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
