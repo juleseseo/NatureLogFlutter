@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nature_log_flutter/ui/screens/herbarium.dart';
 
 import '../../main.dart';
 import 'camera.dart';
@@ -19,14 +20,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
 
     final List<Widget> _pages = <Widget>[
-      const Center(child: Text('Eco Page')),
-      const Center(child: Text('Search Page')),
+      HerbariumPage(),
+      const Center(child: Text('')),
       CameraScreen(camera: cameras.first),
     ];
 
@@ -92,7 +91,7 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.eco, color: Colors.green),
-            label: 'Eco',
+            label: 'Herbarium',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
