@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nature_log_flutter/repository/plant_repository.dart';
 import 'package:nature_log_flutter/ui/screens/camera.dart';
+import 'package:nature_log_flutter/ui/screens/herbarium.dart';
 import 'cubits/camera_cubit.dart';
 import 'cubits/search_cubit.dart';
 import 'ui/screens/home.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/home': (context) => const HomePage(),
           '/camera': (context) => CameraScreen(camera: cameras.first),
+          '/herbarium': (context) => const HerbariumPage(),
         },
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
