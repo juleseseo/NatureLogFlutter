@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nature_log_flutter/ui/screens/herbarium.dart';
+import 'package:nature_log_flutter/ui/screens/search_plants.dart';
+
 
 import '../../main.dart';
 import 'camera.dart';
@@ -24,8 +26,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
     final List<Widget> _pages = <Widget>[
+
       HerbariumPage(),
-      const Center(child: Text('')),
+      
+
+      
+      const SearchPlantsScreen(),
+
       CameraScreen(camera: cameras.first),
     ];
 
