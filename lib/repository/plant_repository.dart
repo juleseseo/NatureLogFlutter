@@ -4,12 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:nature_log_flutter/config/app_config.dart';
 
 class PlantRepository {
-  final String apiUrl = "https://my-api.plantnet.org/v2/identify/";
+  final String apiUrlPlantNet = "https://my-api.plantnet.org/v2/identify/";
   final String project = "all";
-  late final String finalUrl = apiUrl + project + "?api-key="+ AppConfig.plantNetApiKey;
+  late final String finalUrlPlantNet = apiUrlPlantNet + project + "?api-key="+ AppConfig.plantNetApiKey;
+
+  final String apiUrlINaturalist = "https://api.inaturalist.org/v1/search";
 
   Future<String> identifyPlant(File imageFile) async {
-    var request = http.MultipartRequest('POST', Uri.parse(finalUrl));
+    var request = http.MultipartRequest('POST', Uri.parse(finalUrlPlantNet));
     request.files.add(await http.MultipartFile.fromPath('images', imageFile.path));
     request.fields['organs'] = 'auto';
 
@@ -30,6 +32,30 @@ class PlantRepository {
       return bestResult['species']['scientificNameWithoutAuthor'] ?? "Inconnu";
     } else {
       throw Exception('Failed to identify plant. Status code: ${response.statusCode}');
+    }
+  }
+
+  Future<List<Map<String, String>>> searchPlant(String query) async{
+    var response = await http.get(Uri.parse('$apiUrlINaturalist?q=$query&sources=taxa&per_page=5'));
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      List<dynamic> results = jsonResponse['results'] ?? [];
+      List<Map<String, String>> plantList = [];
+
+      for (var result in results.take(5)) {
+        String name = result['name'] ?? 'Inconnu';
+        String imageUrl = result['default_photo']?['square_url'] ?? '';
+
+        plantList.add({
+          'name': name,
+          'url': imageUrl,
+        });
+      }
+
+      return plantList;
+
+    } else {
+      throw Exception('Failed to search plant. Status code: ${response.statusCode}');
     }
   }
 }

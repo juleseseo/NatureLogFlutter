@@ -34,55 +34,46 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Expanded(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Container(color: const Color(0xFF628A67)),
+          Container(color: const Color(0xFF628A67)),
 
-                // Image de fond transparente
-                Center(
-                  child: Image.asset(
-                    'resources/nature_log_logo.jpg',
-                    width: 500,
-                    height: 500,
-                    fit: BoxFit.contain,
-                    color: Colors.white.withOpacity(0.4),
-                    colorBlendMode: BlendMode.modulate,
+          Center(
+            child: Image.asset(
+              'resources/nature_log_logo.jpg',
+              width: 500,
+              height: 500,
+              fit: BoxFit.contain,
+              color: Colors.white.withOpacity(0.4),
+              colorBlendMode: BlendMode.modulate,
+            ),
+          ),
+
+          Align(
+            alignment: const Alignment(0, 0.3),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    'Vos 5 derniers FloraSnaps !',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-
-                // Carousel un peu plus bas que le centre
-                Align(
-                  alignment: const Alignment(0, 0.3), // ajuste pour descendre le carousel
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                SizedBox(
+                  height: 250,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          'Vos 5 derniers FloraSnaps !',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 250,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          children: [
-                            _buildCard('Plante 1', 'resources/plante1.jpeg'),
-                            _buildCard('Plante 2', 'resources/plante2.jpeg'),
-                            _buildCard('Plante 3', 'resources/plante3.jpeg'),
-                            _buildCard('Plante 4', 'resources/plante4.jpeg'),
-                            _buildCard('Plante 5', 'resources/plante5.jpeg'),
-                          ],
-                        ),
-                      ),
+                      _buildCard('Plante 1', 'resources/plante1.jpeg'),
+                      _buildCard('Plante 2', 'resources/plante2.jpeg'),
+                      _buildCard('Plante 3', 'resources/plante3.jpeg'),
+                      _buildCard('Plante 4', 'resources/plante4.jpeg'),
+                      _buildCard('Plante 5', 'resources/plante5.jpeg'),
                     ],
                   ),
                 ),
@@ -90,12 +81,9 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          // Footer
-
-          Container(
-            color: const Color(0xFF628A67),
+          Positioned.fill(
+            child: _pages[_selectedIndex],
           ),
-          _pages[_selectedIndex],
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -103,7 +91,7 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.eco, color: Colors.green,),
+            icon: Icon(Icons.eco, color: Colors.green),
             label: 'Eco',
           ),
           BottomNavigationBarItem(
@@ -119,7 +107,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Fonction pour créer une carte
+
   Widget _buildCard(String title, String imagePath) {
     return Container(
       width: 160,
