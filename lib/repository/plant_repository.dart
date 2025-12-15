@@ -35,27 +35,61 @@ class PlantRepository {
     }
   }
 
-  Future<List<Map<String, String>>> searchPlant(String query) async{
-    var response = await http.get(Uri.parse('$apiUrlINaturalist?q=$query&sources=taxa&per_page=5'));
+  Future<List<Map<String, String>>> searchPlant(String query) async {
+    final response = await http.get(
+      Uri.parse('$apiUrlINaturalist?q=$query&sources=taxa&per_page=5'),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Failed to search plant. Status code: ${response.statusCode}',
+      );
+    }
+
+    final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    final List<dynamic> results = jsonResponse['results'];
+
+    if (results.isEmpty) {
+      return [];
+    }
+    final List<Map<String, String>> plantList = [];
+
+    for (final item in results.take(5)) {
+      final record = item['record'];
+
+      if (record == null) continue;
+
+      final String name = record['name']?.toString() ?? 'Inconnu';
+
+      final String imageUrl =
+          record['default_photo']?['square_url']?.toString() ??
+              record['default_photo']?['medium_url']?.toString() ??
+              '';
+
+      plantList.add({
+        'name': name,
+        'url': imageUrl,
+      });
+    }
+
+    return plantList;
+  }
+
+
+  Future<String> getPlantSummary(String plantName) async {
+    final encodedName = Uri.encodeComponent(plantName);
+    final url = 'https://fr.wikipedia.org/api/rest_v1/page/summary/$encodedName';
+
+    final response = await http.get(Uri.parse(url));
+
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      List<dynamic> results = jsonResponse['results'] ?? [];
-      List<Map<String, String>> plantList = [];
-
-      for (var result in results.take(5)) {
-        String name = result['name'] ?? 'Inconnu';
-        String imageUrl = result['default_photo']?['square_url'] ?? '';
-
-        plantList.add({
-          'name': name,
-          'url': imageUrl,
-        });
-      }
-
-      return plantList;
-
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse['extract'] ?? 'Aucun résumé disponible';
+    } else if (response.statusCode == 404) {
+      return 'Aucune information trouvée sur Wikipedia';
     } else {
-      throw Exception('Failed to search plant. Status code: ${response.statusCode}');
+      throw Exception('Erreur lors de la récupération du résumé');
     }
   }
+
 }
