@@ -75,4 +75,21 @@ class PlantRepository {
     return plantList;
   }
 
+
+  Future<String> getPlantSummary(String plantName) async {
+    final encodedName = Uri.encodeComponent(plantName);
+    final url = 'https://fr.wikipedia.org/api/rest_v1/page/summary/$encodedName';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse['extract'] ?? 'Aucun résumé disponible';
+    } else if (response.statusCode == 404) {
+      return 'Aucune information trouvée sur Wikipedia';
+    } else {
+      throw Exception('Erreur lors de la récupération du résumé');
+    }
+  }
+
 }

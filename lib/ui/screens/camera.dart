@@ -91,7 +91,6 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            // Bouton de capture
             BlocConsumer<CameraCubit, CameraState>(
               listener: (context, state) {
                 if (state is CameraSuccess) {

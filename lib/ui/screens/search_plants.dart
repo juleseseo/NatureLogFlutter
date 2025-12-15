@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nature_log_flutter/ui/screens/plant_details.dart';
 
 import '../../cubits/search_cubit.dart';
 
@@ -8,7 +9,6 @@ class SearchPlantsScreen extends StatefulWidget {
     @override
     State<SearchPlantsScreen> createState() => _SearchPlantsScreenState();
 }
-
 class _SearchPlantsScreenState extends State<SearchPlantsScreen> {
     @override
     Widget build(BuildContext context) {
@@ -110,8 +110,18 @@ class _SearchPlantsScreenState extends State<SearchPlantsScreen> {
                                 ),
                             )
                                 : const Icon(Icons.local_florist, color: Colors.green),
+                            trailing: Icon(Icons.arrow_forward_ios, color: Colors.green[700], size: 18),
+                            onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => PlantDetailsScreen(plant: plant),
+                                    ),
+                                );
+                            },
                         ),
                     );
+
                 },
             );
         } else if (state is SearchError) {
