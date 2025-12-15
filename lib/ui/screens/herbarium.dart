@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
-
-enum FloraType { fleur, feuille, fruit, plante }
-
-class FloraSnap {
-  final String name;
-  final String imagePath;
-  final FloraType type;
-
-  FloraSnap({
-    required this.name,
-    required this.imagePath,
-    required this.type,
-  });
-}
+import '../../models/flora_snap.dart';
+import '../../services/location_service.dart';
+import '../widgets/flora_flip_card.dart';
 
 class HerbariumPage extends StatefulWidget {
   const HerbariumPage({super.key});
@@ -23,34 +12,27 @@ class HerbariumPage extends StatefulWidget {
 
 class _HerbariumPageState extends State<HerbariumPage> {
   FloraType selectedType = FloraType.fleur;
+  List<FloraSnap> snaps = [];
 
-  final List<FloraSnap> snaps = [
-    FloraSnap(
-      name: 'Rose sauvage',
+  // Création d'un FloraSnap avec GPS et date automatique
+  Future<FloraSnap> createFloraSnap() async {
+    final position = await LocationService.getCurrentPosition();
+
+    return FloraSnap(
+      name: 'FloraSnap test',
       imagePath: 'resources/plante1.jpeg',
-      type: FloraType.fleur,
-    ),
-    FloraSnap(
-      name: 'Feuille de chêne',
-      imagePath: 'resources/plante2.jpeg',
-      type: FloraType.feuille,
-    ),
-    FloraSnap(
-      name: 'Pomme verte',
-      imagePath: 'resources/plante3.jpeg',
-      type: FloraType.fruit,
-    ),
-    FloraSnap(
-      name: 'Jeune érable',
-      imagePath: 'resources/plante4.jpeg',
-      type: FloraType.plante,
-    ),
-  ];
+      type: selectedType,
+      date: DateTime.now(),
+      latitude: position.latitude,
+      longitude: position.longitude,
+      description: 'Snap créé avec GPS réel',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final filteredSnaps =
-    snaps.where((snap) => snap.type == selectedType).toList();
+    snaps.where((s) => s.type == selectedType).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -59,71 +41,98 @@ class _HerbariumPageState extends State<HerbariumPage> {
       ),
       body: Column(
         children: [
-          // Dropdown filtre
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 4,
-                  ),
-                ],
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<FloraType>(
-                  value: selectedType,
-                  isExpanded: true,
-                  icon: const Icon(Icons.arrow_drop_down),
-                  onChanged: (FloraType? newValue) {
-                    if (newValue != null) {
-                      setState(() {
-                        selectedType = newValue;
-                      });
-                    }
-                  },
-                  items: const [
-                    DropdownMenuItem(
-                      value: FloraType.fleur,
-                      child: Text('🌸 Fleurs'),
-                    ),
-                    DropdownMenuItem(
-                      value: FloraType.feuille,
-                      child: Text('🍃 Feuilles'),
-                    ),
-                    DropdownMenuItem(
-                      value: FloraType.fruit,
-                      child: Text('🍎 Fruits'),
-                    ),
-                    DropdownMenuItem(
-                      value: FloraType.plante,
-                      child: Text('🌱 Plante entière'),
-                    ),
-                  ],
-                ),
-              ),
+          _buildDropdown(),
+          Expanded(child: _buildGrid(filteredSnaps)),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          final snap = await createFloraSnap();
+          setState(() {
+            snaps.add(snap);
+          });
+        },
+      ),
+    );
+  }
+
+  // Dropdown pour filtrer par type
+  Widget _buildDropdown() {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: DropdownButtonFormField<FloraType>(
+        value: selectedType,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        items: const [
+          DropdownMenuItem(value: FloraType.fleur, child: Text('🌸 Fleurs')),
+          DropdownMenuItem(value: FloraType.feuille, child: Text('🍃 Feuilles')),
+          DropdownMenuItem(value: FloraType.fruit, child: Text('🍎 Fruits')),
+          DropdownMenuItem(value: FloraType.plante, child: Text('🌱 Plantes')),
+        ],
+        onChanged: (value) {
+          if (value != null) {
+            setState(() => selectedType = value);
+          }
+        },
+      ),
+    );
+  }
+
+  // Grille de cartes avec flip
+  Widget _buildGrid(List<FloraSnap> snaps) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(12),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.75,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: snaps.length,
+      itemBuilder: (context, index) {
+        final snap = snaps[index];
+        return FloraFlipCard(
+          front: _frontCard(snap),
+          back: _backCard(snap),
+        );
+      },
+    );
+  }
+
+  // Formater la date
+  String formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/'
+        '${date.month.toString().padLeft(2, '0')}/'
+        '${date.year}';
+  }
+
+  // Face avant de la carte
+  Widget _frontCard(FloraSnap snap) {
+    return _cardContainer(
+      Column(
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(16)),
+              child: Image.asset(snap.imagePath, fit: BoxFit.cover),
             ),
           ),
-
-          // Grille Pokédex
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(12),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.75,
-              ),
-              itemCount: filteredSnaps.length,
-              itemBuilder: (context, index) {
-                final snap = filteredSnaps[index];
-                return _buildFloraCard(snap);
-              },
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              children: [
+                Text(snap.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                Icon(iconForType(snap.type), color: Colors.green),
+              ],
             ),
           ),
         ],
@@ -131,7 +140,39 @@ class _HerbariumPageState extends State<HerbariumPage> {
     );
   }
 
-  Widget _buildFloraCard(FloraSnap snap) {
+  // Face arrière de la carte
+  Widget _backCard(FloraSnap snap) {
+    return _cardContainer(
+      Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _info(Icons.calendar_today, formatDate(snap.date)),
+            _info(Icons.location_on,
+                '${snap.latitude.toStringAsFixed(4)}, ${snap.longitude.toStringAsFixed(4)}'),
+            const SizedBox(height: 8),
+            Text(snap.description),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Ligne d'information (icône + texte)
+  Widget _info(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.green),
+        const SizedBox(width: 6),
+        Expanded(child: Text(text)),
+      ],
+    );
+  }
+
+  // Container de carte
+  Widget _cardContainer(Widget child) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -144,54 +185,7 @@ class _HerbariumPageState extends State<HerbariumPage> {
           ),
         ],
       ),
-      child: Column(
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.asset(
-                snap.imagePath,
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              children: [
-                Text(
-                  snap.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Icon(
-                  _iconForType(snap.type),
-                  color: Colors.green,
-                  size: 20,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      child: child,
     );
-  }
-
-  IconData _iconForType(FloraType type) {
-    switch (type) {
-      case FloraType.fleur:
-        return Icons.local_florist;
-      case FloraType.feuille:
-        return Icons.eco;
-      case FloraType.fruit:
-        return Icons.apple;
-      case FloraType.plante:
-        return Icons.park;
-    }
   }
 }
