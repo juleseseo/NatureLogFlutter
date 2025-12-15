@@ -35,27 +35,44 @@ class PlantRepository {
     }
   }
 
-  Future<List<Map<String, String>>> searchPlant(String query) async{
-    var response = await http.get(Uri.parse('$apiUrlINaturalist?q=$query&sources=taxa&per_page=5'));
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-      List<dynamic> results = jsonResponse['results'] ?? [];
-      List<Map<String, String>> plantList = [];
+  Future<List<Map<String, String>>> searchPlant(String query) async {
+    final response = await http.get(
+      Uri.parse('$apiUrlINaturalist?q=$query&sources=taxa&per_page=5'),
+    );
 
-      for (var result in results.take(5)) {
-        String name = result['name'] ?? 'Inconnu';
-        String imageUrl = result['default_photo']?['square_url'] ?? '';
-
-        plantList.add({
-          'name': name,
-          'url': imageUrl,
-        });
-      }
-
-      return plantList;
-
-    } else {
-      throw Exception('Failed to search plant. Status code: ${response.statusCode}');
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Failed to search plant. Status code: ${response.statusCode}',
+      );
     }
+
+    final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    final List<dynamic> results = jsonResponse['results'];
+
+    if (results.isEmpty) {
+      return [];
+    }
+    final List<Map<String, String>> plantList = [];
+
+    for (final item in results.take(5)) {
+      final record = item['record'];
+
+      if (record == null) continue;
+
+      final String name = record['name']?.toString() ?? 'Inconnu';
+
+      final String imageUrl =
+          record['default_photo']?['square_url']?.toString() ??
+              record['default_photo']?['medium_url']?.toString() ??
+              '';
+
+      plantList.add({
+        'name': name,
+        'url': imageUrl,
+      });
+    }
+
+    return plantList;
   }
+
 }
