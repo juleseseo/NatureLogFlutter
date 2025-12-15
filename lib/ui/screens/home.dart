@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nature_log_flutter/ui/screens/search_plants.dart';
 
 import '../../main.dart';
 import 'camera.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
 
     final List<Widget> _pages = <Widget>[
       const Center(child: Text('Eco Page')),
-      const Center(child: Text('Search Page')),
+      const SearchPlantsScreen(),
       CameraScreen(camera: cameras.first),
     ];
 

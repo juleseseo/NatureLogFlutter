@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nature_log_flutter/repository/plant_repository.dart';
 import 'package:nature_log_flutter/ui/screens/camera.dart';
 import 'cubits/camera_cubit.dart';
+import 'cubits/search_cubit.dart';
 import 'ui/screens/home.dart';
 
 late List<CameraDescription> cameras;
@@ -19,9 +20,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CameraCubit(PlantRepository()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CameraCubit(PlantRepository()),
+        ),
+        BlocProvider(
+          create: (context) => SearchCubit(PlantRepository()),
+        ),
+      ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         routes: {
           '/home': (context) => const HomePage(),
@@ -35,4 +44,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
