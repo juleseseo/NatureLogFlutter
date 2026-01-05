@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:nature_log_flutter/models/flora_snap.dart';
+import 'package:nature_log_flutter/repository/herbarium_repository.dart';
 import 'package:nature_log_flutter/ui/screens/herbarium.dart';
 import 'package:nature_log_flutter/ui/screens/search_plants.dart';
+
 import '../../main.dart';
 import 'camera.dart';
 
@@ -13,23 +18,28 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  final HerbariumRepository _repository = HerbariumRepository();
 
   void _onItemTapped(int index) {
     setState(() => _selectedIndex = index);
   }
 
+  Future<List<FloraSnap>> _loadLatestSnaps() async {
+    final snaps = await _repository.getAllPlants();
+    return snaps.take(5).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
-      _buildHomeContent(),               // 🏠 HOME
-      const HerbariumPage(),             // 🌿 Herbarium
-      const SearchPlantsScreen(),        // 🔍 Search
-      CameraScreen(camera: cameras.first), // 📷 Camera
+      _buildHomeContent(),
+      const HerbariumPage(),
+      const SearchPlantsScreen(),
+      CameraScreen(camera: cameras.first),
     ];
 
     return Scaffold(
       body: pages[_selectedIndex],
-
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -90,18 +100,38 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+
               SizedBox(
                 height: 250,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
-                    _buildCard('Plante 1', 'resources/plante1.jpeg'),
-                    _buildCard('Plante 2', 'resources/plante2.jpeg'),
-                    _buildCard('Plante 3', 'resources/plante3.jpeg'),
-                    _buildCard('Plante 4', 'resources/plante4.jpeg'),
-                    _buildCard('Plante 5', 'resources/plante5.jpeg'),
-                  ],
+                child: FutureBuilder<List<FloraSnap>>(
+                  future: _loadLatestSnaps(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      );
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'Aucun FloraSnap pour le moment 🌱',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }
+
+                    final snaps = snapshot.data!;
+
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: snaps.length,
+                      itemBuilder: (context, index) {
+                        return _buildSnapCard(snaps[index]);
+                      },
+                    );
+                  },
                 ),
               ),
             ],
@@ -111,7 +141,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildCard(String title, String imagePath) {
+  // ---------------- SNAP CARD ----------------
+
+  Widget _buildSnapCard(FloraSnap snap) {
     return Container(
       width: 160,
       margin: const EdgeInsets.only(right: 16),
@@ -133,13 +165,16 @@ class _HomePageState extends State<HomePage> {
             child: ClipRRect(
               borderRadius:
               const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.asset(imagePath, fit: BoxFit.cover),
+              child: Image.file(
+                File(snap.imagePath),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8),
             child: Text(
-              title,
+              snap.name,
               textAlign: TextAlign.center,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
