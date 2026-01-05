@@ -6,7 +6,8 @@ version: 1.0.0+1
 
 flutter:
   assets:
-    - resources/nature
+    - lib/ressources/nature_log_logo.jpg
+    - resources/
   uses-material-design: true
 
 environment:
