@@ -16,7 +16,7 @@ class _SearchPlantsScreenState extends State<SearchPlantsScreen> {
             backgroundColor: Colors.lightGreen[50],
             appBar: AppBar(
                 title: const Text('Rechercher une plante'),
-                backgroundColor: Colors.green,
+                backgroundColor: Color(0xFF628A67),
                 centerTitle: true,
                 elevation: 0,
             ),
@@ -42,7 +42,7 @@ class _SearchPlantsScreenState extends State<SearchPlantsScreen> {
                                         decoration: InputDecoration(
                                             hintText: 'Rechercher une plante...',
                                             hintStyle: TextStyle(color: Colors.grey[400]),
-                                            prefixIcon: const Icon(Icons.search, color: Colors.green),
+                                            prefixIcon: const Icon(Icons.search, color: Color(0xFF628A67)),
                                             suffixIcon: IconButton(
                                                 icon: const Icon(Icons.clear, color: Colors.grey),
                                                 onPressed: () {},
@@ -77,7 +77,7 @@ class _SearchPlantsScreenState extends State<SearchPlantsScreen> {
     Widget _buildContent(SearchState state) {
         if (state is SearchLoading) {
             return Center(
-                child: CircularProgressIndicator(color: Colors.green[700]),
+                child: CircularProgressIndicator(color: Color(0xFF628A67)),
             );
         } else if (state is SearchSuccess) {
             return ListView.builder(
@@ -109,8 +109,8 @@ class _SearchPlantsScreenState extends State<SearchPlantsScreen> {
                                     fit: BoxFit.cover,
                                 ),
                             )
-                                : const Icon(Icons.local_florist, color: Colors.green),
-                            trailing: Icon(Icons.arrow_forward_ios, color: Colors.green[700], size: 18),
+                                : const Icon(Icons.local_florist, color: Color(0xFF628A67)),
+                            trailing: Icon(Icons.arrow_forward_ios, color: Color(0xFF628A67), size: 18),
                             onTap: () {
                                 Navigator.push(
                                     context,
@@ -140,14 +140,14 @@ class _SearchPlantsScreenState extends State<SearchPlantsScreen> {
                     Icon(
                         Icons.local_florist,
                         size: 80,
-                        color: Colors.green[300],
+                        color: Color(0xFF628A67),
                     ),
                     const SizedBox(height: 20),
                     Text(
                         'Recherchez une plante',
                         style: TextStyle(
                             fontSize: 20,
-                            color: Colors.green[700],
+                            color: Color(0xFF628A67),
                             fontWeight: FontWeight.w500,
                         ),
                     ),

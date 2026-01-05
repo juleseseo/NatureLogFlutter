@@ -17,7 +17,7 @@ class PlantDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.lightGreen[50],
         appBar: AppBar(
           title: Text(plant['name'] ?? 'Détails'),
-          backgroundColor: Colors.green,
+          backgroundColor: Color(0xFF628A67),
           centerTitle: true,
           elevation: 0,
         ),
@@ -69,14 +69,14 @@ class PlantDetailsScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.local_florist, color: Colors.green[700]),
+                        Icon(Icons.local_florist, color: Color(0xFF628A67)),
                         const SizedBox(width: 8),
                         Text(
                           'Nom scientifique',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.green[700],
+                            color: Color(0xFF628A67),
                           ),
                         ),
                       ],
@@ -111,14 +111,14 @@ class PlantDetailsScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.info_outline, color: Colors.green[700]),
+                        Icon(Icons.info_outline, color: Color(0xFF628A67)),
                         const SizedBox(width: 8),
                         Text(
                           'Description',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.green[700],
+                            color: Color(0xFF628A67),
                           ),
                         ),
                       ],
@@ -131,7 +131,7 @@ class PlantDetailsScreen extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: CircularProgressIndicator(
-                                color: Colors.green[700],
+                                color: Color(0xFF628A67),
                               ),
                             ),
                           );
