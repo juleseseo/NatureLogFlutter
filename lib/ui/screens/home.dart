@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nature_log_flutter/ui/screens/herbarium.dart';
-import 'package:nature_log_flutter/ui/screens/search_plants.dart';
+import 'package:FloraSnap/ui/screens/herbarium.dart';
+import 'package:FloraSnap/ui/screens/search_plants.dart';
 
 
 import '../../main.dart';
