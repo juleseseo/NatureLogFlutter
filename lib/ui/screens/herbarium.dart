@@ -56,13 +56,18 @@ class _HerbariumPageState extends State<HerbariumPage> {
         : snaps.where((s) => s.type == selectedType).toList();
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Herbier'),
-          backgroundColor: const Color(0xFF628A67),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: _loadPlants,
+      appBar: AppBar(
+        title: const Text('Herbier'),
+        backgroundColor: const Color(0xFF628A67),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home_outlined),
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/home',
+                    (route) => false,
+              );
+            },
             ),
           ],
         ),
@@ -81,6 +86,7 @@ class _HerbariumPageState extends State<HerbariumPage> {
     );
   }
 
+  // Dropdown pour filtrer par type
   Widget _buildDropdown() {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -130,6 +136,12 @@ class _HerbariumPageState extends State<HerbariumPage> {
     );
   }
 
+  // Formater la date
+  String formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/'
+        '${date.month.toString().padLeft(2, '0')}/'
+        '${date.year}';
+  }
 
 
   Widget _frontCard(FloraSnap snap) {
@@ -209,10 +221,5 @@ class _HerbariumPageState extends State<HerbariumPage> {
     } else {
       return Image.file(File(imagePath), fit: BoxFit.cover, width: double.infinity);
     }
-  }
-  String formatDate(DateTime date) {
-    return '${date.day.toString().padLeft(2, '0')}/'
-        '${date.month.toString().padLeft(2, '0')}/'
-        '${date.year}';
   }
 }
