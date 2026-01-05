@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../../models/flora_snap.dart';
+import '../../repository/herbarium_repository.dart';
 import '../../services/location_service.dart';
 import '../widgets/flora_flip_card.dart';
 
@@ -11,10 +14,27 @@ class HerbariumPage extends StatefulWidget {
 }
 
 class _HerbariumPageState extends State<HerbariumPage> {
-  FloraType selectedType = FloraType.fleur;
+  FloraType selectedType = FloraType.all;
   List<FloraSnap> snaps = [];
+  bool isLoading = true;
+  late HerbariumRepository _repository;
 
-  // Création d'un FloraSnap avec GPS et date automatique
+  @override
+  void initState() {
+    super.initState();
+    _repository = HerbariumRepository();
+    _loadPlants();
+  }
+
+  Future<void> _loadPlants() async {
+    setState(() => isLoading = true);
+    final plants = await _repository.getAllPlants();
+    setState(() {
+      snaps = plants;
+      isLoading = false;
+    });
+  }
+
   Future<FloraSnap> createFloraSnap() async {
     final position = await LocationService.getCurrentPosition();
 
@@ -31,33 +51,36 @@ class _HerbariumPageState extends State<HerbariumPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredSnaps =
-    snaps.where((s) => s.type == selectedType).toList();
+    final filteredSnaps = selectedType == FloraType.all
+        ? snaps
+        : snaps.where((s) => s.type == selectedType).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Herbier'),
-        backgroundColor: const Color(0xFF628A67),
-      ),
+        appBar: AppBar(
+          title: const Text('Herbier'),
+          backgroundColor: const Color(0xFF628A67),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: _loadPlants,
+            ),
+          ],
+        ),
       body: Column(
         children: [
           _buildDropdown(),
-          Expanded(child: _buildGrid(filteredSnaps)),
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : filteredSnaps.isEmpty
+                ? const Center(child: Text('Aucune plante trouvée'))
+                : _buildGrid(filteredSnaps),
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () async {
-          final snap = await createFloraSnap();
-          setState(() {
-            snaps.add(snap);
-          });
-        },
       ),
     );
   }
 
-  // Dropdown pour filtrer par type
   Widget _buildDropdown() {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -71,6 +94,7 @@ class _HerbariumPageState extends State<HerbariumPage> {
           ),
         ),
         items: const [
+          DropdownMenuItem(value: FloraType.all, child: Text('🌍 Tout')),
           DropdownMenuItem(value: FloraType.fleur, child: Text('🌸 Fleurs')),
           DropdownMenuItem(value: FloraType.feuille, child: Text('🍃 Feuilles')),
           DropdownMenuItem(value: FloraType.fruit, child: Text('🍎 Fruits')),
@@ -85,7 +109,7 @@ class _HerbariumPageState extends State<HerbariumPage> {
     );
   }
 
-  // Grille de cartes avec flip
+
   Widget _buildGrid(List<FloraSnap> snaps) {
     return GridView.builder(
       padding: const EdgeInsets.all(12),
@@ -106,41 +130,32 @@ class _HerbariumPageState extends State<HerbariumPage> {
     );
   }
 
-  // Formater la date
-  String formatDate(DateTime date) {
-    return '${date.day.toString().padLeft(2, '0')}/'
-        '${date.month.toString().padLeft(2, '0')}/'
-        '${date.year}';
-  }
 
-  // Face avant de la carte
+
   Widget _frontCard(FloraSnap snap) {
     return _cardContainer(
-      Column(
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.asset(snap.imagePath, fit: BoxFit.cover),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              children: [
-                Text(snap.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
-                Icon(iconForType(snap.type), color: Colors.green),
-              ],
-            ),
-          ),
-        ],
-      ),
+        Column(
+            children: [
+        Expanded(
+        child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+    child: _buildImage(snap.imagePath),
+    ),
+    ),
+    Padding(
+    padding: const EdgeInsets.all(8),
+    child: Column(
+    children: [
+    Text(snap.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+    Icon(iconForType(snap.type), color: Colors.green),
+    ],
+    ),
+    ),
+            ],
+        ),
     );
   }
 
-  // Face arrière de la carte
   Widget _backCard(FloraSnap snap) {
     return _cardContainer(
       Padding(
@@ -160,7 +175,6 @@ class _HerbariumPageState extends State<HerbariumPage> {
     );
   }
 
-  // Ligne d'information (icône + texte)
   Widget _info(IconData icon, String text) {
     return Row(
       children: [
@@ -187,5 +201,18 @@ class _HerbariumPageState extends State<HerbariumPage> {
       ),
       child: child,
     );
+  }
+
+  Widget _buildImage(String imagePath) {
+    if (imagePath.startsWith('resources/')) {
+      return Image.asset(imagePath, fit: BoxFit.cover, width: double.infinity);
+    } else {
+      return Image.file(File(imagePath), fit: BoxFit.cover, width: double.infinity);
+    }
+  }
+  String formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/'
+        '${date.month.toString().padLeft(2, '0')}/'
+        '${date.year}';
   }
 }

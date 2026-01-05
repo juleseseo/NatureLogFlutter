@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum FloraType { fleur, feuille, fruit, plante }
+enum FloraType { all, fleur, feuille, fruit, plante }
 
 class FloraSnap {
   final int? id;
@@ -52,6 +52,8 @@ class FloraSnap {
 
 IconData iconForType(FloraType type) {
   switch (type) {
+    case FloraType.all:
+      return Icons.grid_view;
     case FloraType.fleur:
       return Icons.local_florist;
     case FloraType.feuille:
@@ -62,3 +64,4 @@ IconData iconForType(FloraType type) {
       return Icons.park;
   }
 }
+

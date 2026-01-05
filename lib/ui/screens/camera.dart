@@ -43,7 +43,6 @@ class _CameraScreenState extends State<CameraScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Preview de la caméra
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -103,11 +102,17 @@ class _CameraScreenState extends State<CameraScreen> {
                       ),
                       title: Row(
                         children: [
-                          Icon(Icons.check_circle, color: Colors.green[700]),
+                          Icon(
+                            state.isNewPlant ? Icons.star : Icons.check_circle,
+                            color: state.isNewPlant ? Colors.amber : Colors.green[700],
+                          ),
                           const SizedBox(width: 10),
-                          const Text(
-                            'Résultat',
-                            style: TextStyle(color: Colors.green),
+                          Text(
+                            state.isNewPlant ? '🎉 Nouvelle espèce découverte!' : 'Résultat',
+                            style: TextStyle(
+                              color: state.isNewPlant ? Colors.amber[700] : Colors.green,
+                              fontWeight: state.isNewPlant ? FontWeight.bold : FontWeight.normal,
+                            ),
                           ),
                         ],
                       ),
@@ -145,7 +150,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         children: [
                           const Icon(Icons.error, color: Colors.white),
                           const SizedBox(width: 10),
-                          Expanded(child: Text(state.message)),
+                          Expanded(child: Text("Plante non identifiée")),
                         ],
                       ),
                       backgroundColor: Colors.red[700],
