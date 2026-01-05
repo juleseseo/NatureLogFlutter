@@ -18,10 +18,14 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  geolocator: ^10.1.0
+  geolocator: ^14.0.2
   http: ^1.2.0
   camera: ^0.11.0
   flutter_bloc: ^9.1.1
+  sqflite: ^2.3.0
+  path_provider: ^2.1.1
+  path: ^1.8.3
+
 
 dev_dependencies:
   flutter_test:

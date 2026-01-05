@@ -28,9 +28,6 @@ class _HomePageState extends State<HomePage> {
     final List<Widget> _pages = <Widget>[
 
       HerbariumPage(),
-      
-
-      
       const SearchPlantsScreen(),
 
       CameraScreen(camera: cameras.first),
@@ -43,13 +40,19 @@ class _HomePageState extends State<HomePage> {
           Container(color: const Color(0xFF628A67)),
 
           Center(
-            child: Image.asset(
-              'resources/nature_log_logo.jpg',
-              width: 500,
-              height: 500,
-              fit: BoxFit.contain,
-              color: Colors.white.withOpacity(0.4),
-              colorBlendMode: BlendMode.modulate,
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Colors.white.withValues(
+                  alpha: 0.4,
+                ),
+                BlendMode.modulate,
+              ),
+              child: Image.asset(
+                'resources/nature_log_logo.jpg',
+                width: 500,
+                height: 500,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
 

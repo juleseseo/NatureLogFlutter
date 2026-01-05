@@ -35,7 +35,7 @@ class _CameraScreenState extends State<CameraScreen> {
       backgroundColor: Colors.lightGreen[50],
       appBar: AppBar(
         title: const Text('Prendre une photo'),
-        backgroundColor: Color(0xFF628A67),
+        backgroundColor: Colors.green,
         centerTitle: true,
         elevation: 0,
       ),
@@ -43,7 +43,6 @@ class _CameraScreenState extends State<CameraScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Preview de la caméra
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -70,14 +69,14 @@ class _CameraScreenState extends State<CameraScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               CircularProgressIndicator(
-                                color: Color(0xFF628A67),
+                                color: Colors.green[700],
                               ),
                               const SizedBox(height: 20),
                               Text(
                                 'Initialisation de la caméra...',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Color(0xFF628A67),
+                                  color: Colors.green[700],
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -103,11 +102,17 @@ class _CameraScreenState extends State<CameraScreen> {
                       ),
                       title: Row(
                         children: [
-                          Icon(Icons.check_circle, color: Color(0xFF628A67)),
+                          Icon(
+                            state.isNewPlant ? Icons.star : Icons.check_circle,
+                            color: state.isNewPlant ? Colors.amber : Colors.green[700],
+                          ),
                           const SizedBox(width: 10),
-                          const Text(
-                            'Résultat',
-                            style: TextStyle(color: Color(0xFF628A67)),
+                          Text(
+                            state.isNewPlant ? '🎉 Nouvelle espèce découverte!' : 'Résultat',
+                            style: TextStyle(
+                              color: state.isNewPlant ? Colors.amber[700] : Colors.green,
+                              fontWeight: state.isNewPlant ? FontWeight.bold : FontWeight.normal,
+                            ),
                           ),
                         ],
                       ),
@@ -115,14 +120,14 @@ class _CameraScreenState extends State<CameraScreen> {
                         state.result,
                         style: TextStyle(
                           fontSize: 16,
-                          color: Color(0xFF628A67),
+                          color: Colors.green[900],
                         ),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           style: TextButton.styleFrom(
-                            backgroundColor: Color(0xFF628A67),
+                            backgroundColor: Colors.green,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -145,7 +150,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         children: [
                           const Icon(Icons.error, color: Colors.white),
                           const SizedBox(width: 10),
-                          Expanded(child: Text(state.message)),
+                          Expanded(child: Text("Plante non identifiée")),
                         ],
                       ),
                       backgroundColor: Colors.red[700],
@@ -173,7 +178,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   ),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF628A67),
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),

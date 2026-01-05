@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nature_log_flutter/repository/herbarium_repository.dart';
 import 'package:nature_log_flutter/repository/plant_repository.dart';
 import 'package:nature_log_flutter/ui/screens/camera.dart';
 import 'package:nature_log_flutter/ui/screens/herbarium.dart';
@@ -24,7 +25,10 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => CameraCubit(PlantRepository()),
+          create: (context) => CameraCubit(
+            PlantRepository(),
+            HerbariumRepository(),
+          ),
         ),
         BlocProvider(
           create: (context) => SearchCubit(PlantRepository()),
