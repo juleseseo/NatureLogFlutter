@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:nature_log_flutter/config/app_config.dart';
+import 'package:FloraSnap/config/app_config.dart';
 
 class PlantRepository {
   final String apiUrlPlantNet = "https://my-api.plantnet.org/v2/identify/";

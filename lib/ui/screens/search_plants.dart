@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nature_log_flutter/ui/screens/plant_details.dart';
+import 'package:FloraSnap/ui/screens/plant_details.dart';
 
 import '../../cubits/search_cubit.dart';
 

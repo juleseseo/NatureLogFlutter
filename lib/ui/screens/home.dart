@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:nature_log_flutter/models/flora_snap.dart';
-import 'package:nature_log_flutter/repository/herbarium_repository.dart';
-import 'package:nature_log_flutter/ui/screens/herbarium.dart';
-import 'package:nature_log_flutter/ui/screens/search_plants.dart';
+import 'package:FloraSnap/ui/screens/herbarium.dart';
+import 'package:FloraSnap/ui/screens/search_plants.dart';
+import 'package:FloraSnap/models/flora_snap.dart';
+import 'package:FloraSnap/repository/herbarium_repository.dart';
 
 import '../../main.dart';
 import 'camera.dart';
